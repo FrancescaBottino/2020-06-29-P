@@ -99,6 +99,22 @@ public class FXMLController {
     @FXML
     void doCollegamento(ActionEvent event) {
     	
+    	txtResult.clear();
+    	
+    	Match m1 = cmbM1.getValue();
+    	Match m2 = cmbM2.getValue();
+    	
+    	if(m1.getMatchID() == m2.getMatchID()) {
+    		txtResult.appendText("Non puoi inserire due match uguali");
+    		return;
+    	}
+    	
+    	
+    	
+    	
+    	txtResult.appendText("percorso: "+model.trovaPercorso(m1, m2));
+    	
+    	
     	
     	
     }

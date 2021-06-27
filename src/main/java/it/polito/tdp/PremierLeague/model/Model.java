@@ -18,6 +18,8 @@ public class Model {
 	private PremierLeagueDAO dao;
 	private Graph <Match, DefaultWeightedEdge> grafo;
 	private Map<Integer, Match> idMap;
+	private List<Match> soluzioneMigliore;
+	private double pesoMax;
 	
 	
 	public Model() {
@@ -25,6 +27,7 @@ public class Model {
 		dao = new PremierLeagueDAO();
 		idMap= new TreeMap<Integer, Match>();
 		this.dao.listAllMatches(idMap);
+		
 		
 	}
 	
@@ -160,5 +163,90 @@ public class Model {
 		
 		return this.grafo.vertexSet();
 	}
+
+	public List<Match> trovaPercorso(Match m1, Match m2) {
+		
+		//se esiste, un cammino aciclico semplice tra le due partite che abbia le seguenti caratteristiche:
+		//sia di peso massimo;
+		//non passi mai da un arco che collega due partite che si sono giocate tra le stesse due squadre (ad
+		//esempio se il vertice di partenza rappresenta il match tra le squadre team1 e team2, allora il vertice
+		//di destinazione non potrà essere relativo a team1-team2 né a team2-team1);
+
+		
+		this.soluzioneMigliore = null;
+		
+		this.pesoMax=0.0;
+		
+		List<Match> parziale = new ArrayList<Match>();
+		
+		parziale.add(m1);
+		
+		cerca(parziale, m2, 0);
+		
+		return soluzioneMigliore;
+			
+				
+	}
+	
+	public void cerca(List<Match> parziale, Match m2, double pesoParziale) {
+		
+		//caso terminale
+		
+		if(parziale.get(parziale.size()-1).equals(m2)) {
+			
+			
+			if(this.soluzioneMigliore==null) { //primo percorso 
+				this.soluzioneMigliore=new ArrayList<>(parziale);
+				
+			}
+			
+			else if(pesoParziale > pesoMax) { //peso massimo
+				
+				this.soluzioneMigliore=new ArrayList<>(parziale);
+				this.pesoMax=pesoParziale;
+				
+			}
+			
+			return;
+		}
+		
+		
+		
+		//generazione sotto problemi
+		
+		Match ultimo = parziale.get(parziale.size()-1);
+		Integer team1 = parziale.get(parziale.size()-1).getTeamHomeID();
+		Integer team2 = parziale.get(parziale.size()-1).getTeamAwayID();
+		
+		List<Match> vicini = Graphs.neighborListOf(grafo, ultimo);
+		
+		for(Match m: vicini) {
+			
+			Integer team3 = m.getTeamHomeID();
+			Integer team4 = m.getTeamAwayID();
+			
+			if(!parziale.contains(m) && (team1!=team3 && team1!=team4) && (team2!=team3 && team2!=team4)) {
+				
+				parziale.add(m);
+				
+				double nuovoPeso = pesoParziale + (int) grafo.getEdgeWeight(grafo.getEdge(ultimo, m));
+				
+				cerca(parziale, m2, nuovoPeso);
+				
+				parziale.remove(m);
+			}
+			
+		}
+ 		
+		
+		
+	}
+	
+	
+	public List<Match> getPercorso(){
+		return this.soluzioneMigliore;
+	}
+
+	
 		
 }
