@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
+
+import it.polito.tdp.PremierLeague.model.Match;
 import it.polito.tdp.PremierLeague.model.Model;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -39,13 +41,13 @@ public class FXMLController {
     private TextField txtMinuti; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbMese"
-    private ComboBox<?> cmbMese; // Value injected by FXMLLoader
+    private ComboBox<String> cmbMese; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbM1"
-    private ComboBox<?> cmbM1; // Value injected by FXMLLoader
+    private ComboBox<Match> cmbM1; // Value injected by FXMLLoader
 
     @FXML // fx:id="cmbM2"
-    private ComboBox<?> cmbM2; // Value injected by FXMLLoader
+    private ComboBox<Match> cmbM2; // Value injected by FXMLLoader
 
     @FXML // fx:id="txtResult"
     private TextArea txtResult; // Value injected by FXMLLoader
@@ -53,15 +55,51 @@ public class FXMLController {
     @FXML
     void doConnessioneMassima(ActionEvent event) {
     	
+    	if(model.getGrafo() != null) {
+    		
+    		txtResult.appendText("\n\nCoppie con connessione massima: \n");
+        	
+    		txtResult.appendText(this.model.getConnessioneMax());
+    	}
+    	else 
+    		txtResult.setText("Devi prima creare il grafo");
+    	
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	
+    	txtResult.clear();
+    	
+    	int min = Integer.parseInt(txtMinuti.getText());
+    	
+    	if(min <= 0 || min > 90) {
+    		txtResult.setText("Devi inserire un numero tra 0 e 90 minuti");
+    		return;
+    	}
+    	
+    	if(txtMinuti.getText() == "" ) {
+    		txtResult.setText("Non hai inserito i minuti");
+    		return;
+    	}
+    	
+    	String mese = cmbMese.getValue();
+    	
+    	model.creaGrafo(mese, min);
+    	
+    	txtResult.appendText("Grafo creato!\n\n");
+    	txtResult.appendText("Numero di vertici: "+model.getNVertici()+"\n");
+    	txtResult.appendText("Numero di archi: "+model.getNArchi()+"\n");
+    	
+    	cmbM1.getItems().addAll(model.getVertici());
+    	cmbM2.getItems().addAll(model.getVertici());
+    	
     }
 
     @FXML
     void doCollegamento(ActionEvent event) {
+    	
+    	
     	
     }
 
@@ -79,6 +117,9 @@ public class FXMLController {
     
     public void setModel(Model model) {
     	this.model = model;
+    	
+    	cmbMese.getItems().addAll("Gennaio", "Febbraio", "Marzo", "Aprile", "Maggio", "Giugno", "Luglio", "Agosto", "Settembre", "Ottobre", "Novembre", "Dicembre");
+    	
   
     }
     
