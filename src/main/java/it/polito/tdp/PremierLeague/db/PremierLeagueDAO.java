@@ -147,7 +147,7 @@ public class PremierLeagueDAO {
 				+ "Month(m1.Date) = ? AND Month(m2.Date) = ? AND "
 				+ "a1.MatchID > a2.MatchID AND "
 				+ "a1.PlayerID = a2.PlayerID AND "
-				+ "a1.TimePlayed > ? "
+				+ "a1.TimePlayed >= ? "
 				+ "GROUP BY a1.MatchID, a2.MatchID ";
 		
 		List<Adiacenza> result= new ArrayList<Adiacenza>();
