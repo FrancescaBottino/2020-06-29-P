@@ -75,8 +75,7 @@ public class Model {
 	
 	public String getConnessioneMax() {
 		
-
-		
+	
 		List<Adiacenza> best=new ArrayList<Adiacenza>();
 		
 		int pesoMigliore=0;
@@ -229,7 +228,7 @@ public class Model {
 				
 				parziale.add(m);
 				
-				double nuovoPeso = pesoParziale + (int) grafo.getEdgeWeight(grafo.getEdge(ultimo, m));
+				double nuovoPeso = pesoParziale + (int) grafo.getEdgeWeight(grafo.getEdge(ultimo, m)); //problema con getEdge
 				
 				cerca(parziale, m2, nuovoPeso);
 				

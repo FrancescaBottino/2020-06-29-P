@@ -70,6 +70,8 @@ public class FXMLController {
     void doCreaGrafo(ActionEvent event) {
     	
     	txtResult.clear();
+    	cmbM1.getItems().clear();
+    	cmbM2.getItems().clear();
     	
     	int min = Integer.parseInt(txtMinuti.getText());
     	
@@ -84,6 +86,11 @@ public class FXMLController {
     	}
     	
     	String mese = cmbMese.getValue();
+    	
+    	if(mese == null) {
+    		txtResult.setText("Devi inserire un mese");
+    		return;
+    	}
     	
     	model.creaGrafo(mese, min);
     	
@@ -109,10 +116,27 @@ public class FXMLController {
     		return;
     	}
     	
+    	if(m1.getMatchID() ==null || m2.getMatchID() == null) {
+    		txtResult.appendText("Devi selezionare due match");
+    		return;
+    	}
     	
     	
+    	List<Match> percorso = model.trovaPercorso(m1, m2);
     	
-    	txtResult.appendText("percorso: "+model.trovaPercorso(m1, m2));
+    	if(percorso==null) {
+    		
+        	txtResult.appendText("Non esiste un percorso");
+        	return;
+        	
+    	}
+    	
+    	txtResult.appendText("Percorso: \n");
+    	
+    	for(Match m : percorso) {
+    		
+    		txtResult.appendText(m.getTeamHomeNAME()+" vs. "+m.getTeamAwayNAME()+"\n");
+    	}
     	
     	
     	
